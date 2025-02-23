@@ -12,7 +12,7 @@ func main() {
 	router.POST("/contacts", postContacts)
 	router.GET("/contacts/:id", getContactByID)
 
-	router.Run("localhost:8080")
+	router.Run("0.0.0.0:8080")
 }
 
 type contact struct {
@@ -20,7 +20,6 @@ type contact struct {
 	Name  string `json:"name"`
 	Phone int64  `json:"phone"`
 	Email string `json:"email"`
-	// Birthday date `json:"birthday"`
 }
 
 // constacts slice to seed record album data.
