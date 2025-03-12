@@ -15,10 +15,16 @@ services:
       dockerfile: contacts-manager.dockerfile
     ports:
       - "8080:8080"
-    environment:
-      - PORT=8080
     depends_on:
       - mongodb
+
+  contacts-manager-api-docs:
+    build:
+      context: ./api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - contacts-manager-api
 
 volumes:
   mongodb_data:

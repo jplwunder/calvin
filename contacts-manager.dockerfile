@@ -3,6 +3,9 @@
 # pull official golang base image
 FROM golang:1.24
 
+# Install reflex for hot reloading
+RUN go install github.com/cespare/reflex@latest
+
 # set the Current Working Directory inside the container
 WORKDIR /app
 
@@ -12,13 +15,10 @@ COPY go.mod go.sum ./
 # download all dependencies
 RUN go mod download
 
-# copy all files with the go extension from the current directory to the WORKDIR inside the container
-COPY *.go ./
+# Copy the source code
+COPY . .
 
-# compile application in a static application binary named contacts-manager
-RUN go build -o /contacts-manager
-
-# tell docker what command to run when image is used to start a container
-CMD ["/contacts-manager"]
+# Command to run reflex for hot reloading
+CMD ["reflex", "-r", "\\.go$$", "-s", "--", "sh", "-c", "go run ."]
 
 EXPOSE 8080
