@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"encoding/json"
@@ -11,10 +11,7 @@ import (
 
 type envelope map[string]any
 
-func (app *Application) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
-	// in a very very performance sensitive environment, it's worth
-	// changing from MarshalIndent to Marshal. since MarshalIndent
-	// takes 65% longer to run and uses 30% more memory
+func (app *application) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
 	js, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
 		return err
@@ -33,8 +30,9 @@ func (app *Application) writeJSON(w http.ResponseWriter, status int, data envelo
 	return nil
 }
 
-func (app *Application) readJSON(w http.ResponseWriter, r *http.Request, dst any) error {
-	maxBytes := 1_048_576 // limit request body to 1MB
+func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst any) error {
+	// Limit the size of the request body to 1MB
+	maxBytes := 1_048_576
 	r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))
 
 	dec := json.NewDecoder(r.Body)

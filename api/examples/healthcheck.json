@@ -1,0 +1,8 @@
+{
+  "status": "available",
+  "system_info": {
+    "environment": "development",
+    "version": "1.0.0",
+    "trusted_origins": "http://localhost:8080, http://localhost:3000"
+  }
+}

@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: Contacts Manager API
+  description: API for managing contacts
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /healthcheck:
+    get:
+      summary: Check API health
+      description: Returns the current status of the API and system information
+      operationId: healthcheck
+      tags:
+        - System
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: available
+                  system_info:
+                    type: object
+                    properties:
+                      environment:
+                        type: string
+                        example: development
+                      version:
+                        type: string
+                        example: 1.0.0
+                      trusted_origins:
+                        type: string
+                        example: http://localhost:8080, http://localhost:3000
+  /contacts:
+    get:
+      summary: List all contacts
+      description: Returns a list of all contacts
+      operationId: listContacts
+      tags:
+        - Contacts
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contact'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a new contact
+      description: Creates a new contact with the provided information
+      operationId: createContact
+      tags:
+        - Contacts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewContact'
+      responses:
+        '201':
+          description: Contact created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Contact'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /contacts/{id}:
+    get:
+      summary: Get a specific contact
+      description: Returns a specific contact by ID
+      operationId: getContact
+      tags:
+        - Contacts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Contact ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Contact'
+        '404':
+          description: Contact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Contact:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        name:
+          type: string
+          example: "John Doe"
+        phone:
+          type: integer
+          format: int64
+          example: 5551234567890
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+      required:
+        - id
+        - name
+        - phone
+        - email
+    NewContact:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "John Doe"
+        phone:
+          type: integer
+          format: int64
+          example: 5551234567890
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+      required:
+        - name
+        - phone
+        - email
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Resource not found"

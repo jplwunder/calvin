@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"golang.org/x/time/rate"
 )
 
-func (app *Application) recoverPanic(next http.Handler) http.Handler {
+func (app *application) recoverPanic(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
@@ -23,7 +23,7 @@ func (app *Application) recoverPanic(next http.Handler) http.Handler {
 	})
 }
 
-func (app *Application) rateLimit(next http.Handler) http.Handler {
+func (app *application) rateLimit(next http.Handler) http.Handler {
 	type client struct {
 		limiter  *rate.Limiter
 		lastSeen time.Time
@@ -37,7 +37,6 @@ func (app *Application) rateLimit(next http.Handler) http.Handler {
 	go func() {
 		for {
 			time.Sleep(time.Minute)
-
 			mu.Lock()
 
 			for ip, client := range clients {
@@ -61,8 +60,11 @@ func (app *Application) rateLimit(next http.Handler) http.Handler {
 			mu.Lock()
 
 			if _, found := clients[ip]; !found {
-				clients[ip] = &client{limiter: rate.NewLimiter(rate.Limit(app.config.limiter.rps), app.config.limiter.burst)}
+				clients[ip] = &client{
+					limiter: rate.NewLimiter(rate.Limit(app.config.limiter.rps), app.config.limiter.burst),
+				}
 			}
+
 			clients[ip].lastSeen = time.Now()
 
 			if !clients[ip].limiter.Allow() {
@@ -73,26 +75,22 @@ func (app *Application) rateLimit(next http.Handler) http.Handler {
 
 			mu.Unlock()
 		}
-
 		next.ServeHTTP(w, r)
 	})
 }
 
-func (app *Application) enableCORS(next http.Handler) http.Handler {
+func (app *application) enableCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Vary", "Origin")
-
 		origin := r.Header.Get("Origin")
-
 		if origin != "" {
-			for _, allowedOrigin := range app.config.cors.trustedOrigins {
-				if origin == allowedOrigin {
+			for _, trustedOrigin := range app.config.cors.trustedOrigins {
+				if origin == trustedOrigin {
 					w.Header().Set("Access-Control-Allow-Origin", origin)
 					break
 				}
 			}
 		}
-
 		next.ServeHTTP(w, r)
 	})
 }

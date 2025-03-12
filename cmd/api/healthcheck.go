@@ -1,13 +1,11 @@
-package main
+package api
 
 import (
 	"net/http"
 	"strings"
-
-	"github.com/julienschmidt/httprouter"
 )
 
-func (app *Application) healthcheckHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
 	env := envelope{
 		"status": "available",
 		"system_info": map[string]string{

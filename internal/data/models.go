@@ -1,4 +1,14 @@
-package generate
+package data
+
+type Models struct {
+	Contacts ContactModel
+}
+
+func NewModels() Models {
+	return Models{
+		Contacts: ContactModel{},
+	}
+}
 
 type Contact struct {
 	ID    string `json:"id"`
