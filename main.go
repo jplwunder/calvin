@@ -1,66 +1,79 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+	"github.com/joho/godotenv"
+	"log"
+	"log/slog"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"os"
+	"strconv"
+	"strings"
+	"time"
 )
 
+const version = "1.0.0"
+const corsTrustedOrigins = "http://localhost:3000"
+
+type config struct {
+	port    int
+	env     string
+	limiter struct {
+		rps     float64
+		burst   int
+		enabled bool
+	}
+	cors struct {
+		trustedOrigins []string
+	}
+}
+
+type Application struct {
+	config config
+	logger *slog.Logger
+}
+
 func main() {
-	router := gin.Default()
-	router.GET("/contacts", getContacts)
-	router.POST("/contacts", postContacts)
-	router.GET("/contacts/:id", getContactByID)
+	var cfg config
 
-	router.Run("0.0.0.0:8080")
-}
-
-type contact struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Phone int64  `json:"phone"`
-	Email string `json:"email"`
-}
-
-// constacts slice to seed record album data.
-var contacts = []contact{
-	{ID: "1", Name: "Fredi William Wunderlich", Phone: 5511989669526, Email: "fredi.wunder@gmail.com"},
-	{ID: "2", Name: "Letícia Rahel Lopes Wunderlich", Phone: 5511995265188, Email: "leticia.wunder@gmail.com"},
-	{ID: "3", Name: "Izalira Ferreira Lopes Wunderlich", Phone: 5511989694053, Email: "izaliralopes@gmail.com"},
-}
-
-// getContacts responds with the list of all contacts as JSON.
-func getContacts(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, contacts)
-}
-
-// postAlbums adds an album from JSON received in the request body.
-func postContacts(c *gin.Context) {
-	var newContact contact
-
-	// Call BindJSON to bind the received JSON to
-	// newContact.
-	if err := c.BindJSON(&newContact); err != nil {
-		return
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
 	}
 
-	// Add the new album to the slice.
-	contacts = append(contacts, newContact)
-	c.IndentedJSON(http.StatusCreated, newContact)
-}
-
-// getContactByID locates the contact whose ID value matches the id
-// parameter sent by the client, then returns that album as a response.
-func getContactByID(c *gin.Context) {
-	id := c.Param("id")
-
-	// Loop over the list of albums, looking for
-	// an album whose ID value matches the parameter.
-	for _, a := range contacts {
-		if a.ID == id {
-			c.IndentedJSON(http.StatusOK, a)
-			return
-		}
+	port := os.Getenv("API_PORT")
+	if port == "" {
+		port = "8080"
 	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "contact not found"})
+	cfg.port, _ = strconv.Atoi(port)
+	flag.IntVar(&cfg.port, "port", cfg.port, "API server port")
+	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
+	flag.Float64Var(&cfg.limiter.rps, "limiter-rps", 2, "Rate limiter maximum requests per second")
+	flag.IntVar(&cfg.limiter.burst, "limiter-burst", 4, "Rate limiter maximum burst")
+	flag.BoolVar(&cfg.limiter.enabled, "limiter-enabled", true, "Enable rate limiter")
+	flag.Parse()
+
+	cfg.cors.trustedOrigins = strings.Fields(corsTrustedOrigins)
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+
+	app := &Application{
+		config: cfg,
+		logger: logger,
+	}
+
+	srv := &http.Server{
+		Addr:         fmt.Sprintf(":%d", cfg.port),
+		Handler:      app.routes(),
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		ErrorLog:     slog.NewLogLogger(logger.Handler(), slog.LevelError),
+	}
+
+	logger.Info("starting server", "addr", srv.Addr, "env", cfg.env, "cors", cfg.cors.trustedOrigins)
+
+	err = srv.ListenAndServe()
+	logger.Error(err.Error())
+	os.Exit(1)
 }
