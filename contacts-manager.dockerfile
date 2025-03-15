@@ -3,8 +3,8 @@
 # pull official golang base image
 FROM golang:1.24
 
-# Install reflex for hot reloading
-RUN go install github.com/cespare/reflex@latest
+# Install air for live reloading
+RUN go install github.com/air-verse/air@latest
 
 # set the Current Working Directory inside the container
 WORKDIR /app
@@ -18,7 +18,7 @@ RUN go mod download
 # Copy the source code
 COPY . .
 
-# Command to run reflex for hot reloading
-CMD ["reflex", "-r", "\\.go$$", "-s", "--", "sh", "-c", "go run ."]
+# Command to run air for live reloading
+CMD ["air", "-c", ".air.toml"]
 
 EXPOSE 8080
