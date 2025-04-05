@@ -2,16 +2,6 @@ package data
 
 import ()
 
-type Models struct {
-	Customers CustomerModel
-}
-
-func NewModels() Models {
-	return Models{
-		Customers: CustomerModel{},
-	}
-}
-
 type CustomerModel struct {
 	ID    string `json:"id"`
 	Name  string `json:"name"`
