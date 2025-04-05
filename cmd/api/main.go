@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -45,19 +44,13 @@ func Run() {
 		log.Fatal("Error loading .env file")
 	}
 
-	port := os.Getenv("API_PORT")
-	if port == "" {
-		port = "8080"
-	}
-	cfg.port, _ = strconv.Atoi(port)
-
 	environment := os.Getenv("ENVIRONMENT")
 	if environment == "" {
 		environment = "DEVELOPMENT"
 	}
 	cfg.environment = environment
 
-	flag.IntVar(&cfg.port, "port", cfg.port, "API server port")
+	flag.IntVar(&cfg.port, "port", 8080, "API server port")
 	flag.StringVar(&cfg.environment, "environment", cfg.environment, "Environment (DEVELOPMENT|STAGING|PRODUCTION)")
 	flag.Float64Var(&cfg.limiter.rps, "limiter-rps", 2, "Rate limiter maximum requests per second")
 	flag.IntVar(&cfg.limiter.burst, "limiter-burst", 4, "Rate limiter maximum burst")
