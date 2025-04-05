@@ -90,6 +90,11 @@ func Run() {
 		"env":  cfg.environment,
 	})
 
+	err = OpenDatabase()
+	if err != nil {
+		logger.PrintError(err, nil)
+	}
+
 	err = srv.ListenAndServe()
 	logger.PrintFatal(err, nil)
 }
