@@ -9,10 +9,10 @@ services:
       - mongodb_data:/data/db # Persistent storage
       - mongodb_config:/data/configdb # Persistent config
 
-  contacts-manager-api:
+  calvin-api:
     build:
       context: .
-      dockerfile: contacts-manager.dockerfile
+      dockerfile: calvin-api.dockerfile
     ports:
       - "8080:8080"
     depends_on:
@@ -20,13 +20,13 @@ services:
     volumes:
       - ./:/app
 
-  contacts-manager-api-docs:
+  calvin-api-docs:
     build:
       context: ./api
     ports:
       - "8000:8000"
     depends_on:
-      - contacts-manager-api
+      - calvin-api
 
 volumes:
   mongodb_data:

@@ -1,16 +1,16 @@
 # API Examples
 
-This directory contains example JSON requests and responses for the Contacts Manager API endpoints.
+This directory contains example JSON requests and responses for the Calvin API endpoints.
 
 ## Files
 
 ### Success Responses
 
 - `healthcheck.json` - Example response from the `/healthcheck` endpoint
-- `contacts-list.json` - Example response from the `GET /contacts` endpoint (listing all contacts)
-- `contact-get.json` - Example response from the `GET /contacts/:id` endpoint (getting a specific contact)
-- `contact-create-request.json` - Example request body for the `POST /contacts` endpoint (creating a new contact)
-- `contact-create-response.json` - Example response from the `POST /contacts` endpoint (after creating a new contact)
+- `customer-list.json` - Example response from the `GET /customers` endpoint (listing all customers)
+- `customer-get.json` - Example response from the `GET /customers/:id` endpoint (getting a specific customer)
+- `customer-create-request.json` - Example request body for the `POST /customers` endpoint (creating a new customer)
+- `customer-create-response.json` - Example response from the `POST /customers` endpoint (after creating a new customer)
 
 ### Error Responses
 

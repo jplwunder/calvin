@@ -1,6 +1,6 @@
 package main
 
-import "contacts-manager/cmd/api"
+import "calvin/cmd/api"
 
 func main() {
 	api.Run()

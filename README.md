@@ -7,5 +7,5 @@ Easily manage your customers, create cost estimates, track sales, and much more 
 
 ### 🔹 Version 0.1  
 ✅ Local functionality for managing customer information  
-✅ Save and retrieve contact details  
+✅ Save and retrieve customer details  
 ❌ No database integration yet (coming soon!)  

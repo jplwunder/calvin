@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: Contacts Manager API
-  description: API for managing contacts
+  title: Calvin API
+  description: API for managing customers
   version: 1.0.0
 servers:
   - url: http://localhost:8080
@@ -37,13 +37,13 @@ paths:
                       trusted_origins:
                         type: string
                         example: http://localhost:8080, http://localhost:3000
-  /contacts:
+  /customers:
     get:
-      summary: List all contacts
-      description: Returns a list of all contacts
-      operationId: listContacts
+      summary: List all customers
+      description: Returns a list of all customers
+      operationId: listCustomers
       tags:
-        - Contacts
+        - Customers
       responses:
         '200':
           description: Successful response
@@ -55,7 +55,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Contact'
+                      $ref: '#/components/schemas/Customer'
         '500':
           description: Internal server error
           content:
@@ -63,27 +63,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create a new contact
-      description: Creates a new contact with the provided information
-      operationId: createContact
+      summary: Create a new customer
+      description: Creates a new customer with the provided information
+      operationId: createCustomer
       tags:
-        - Contacts
+        - Customers
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewContact'
+              $ref: '#/components/schemas/NewCustomer'
       responses:
         '201':
-          description: Contact created successfully
+          description: Customer created successfully
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Contact'
+                    $ref: '#/components/schemas/Customer'
         '400':
           description: Bad request
           content:
@@ -96,18 +96,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /contacts/{id}:
+  /customers/{id}:
     get:
-      summary: Get a specific contact
-      description: Returns a specific contact by ID
-      operationId: getContact
+      summary: Get a specific customer
+      description: Returns a specific customer by ID
+      operationId: getCustomer
       tags:
-        - Contacts
+        - Customers
       parameters:
         - name: id
           in: path
           required: true
-          description: Contact ID
+          description: Customer ID
           schema:
             type: string
       responses:
@@ -119,9 +119,9 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Contact'
+                    $ref: '#/components/schemas/Customer'
         '404':
-          description: Contact not found
+          description: Customer not found
           content:
             application/json:
               schema:
@@ -134,7 +134,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Contact:
+    Customer:
       type: object
       properties:
         id:
@@ -156,7 +156,7 @@ components:
         - name
         - phone
         - email
-    NewContact:
+    NewCustomer:
       type: object
       properties:
         name:

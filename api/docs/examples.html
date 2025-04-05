@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contacts Manager API Examples</title>
+  <title>Calvin API Examples</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
   <style>
     body {
@@ -76,12 +76,12 @@
 </head>
 <body>
   <div class="header">
-    <h1>Contacts Manager API Examples</h1>
+    <h1>Calvin API Examples</h1>
   </div>
   <div class="nav">
     <a href="index.html">OpenAPI Spec</a>
     <a href="examples.html">Examples</a>
-    <a href="../contacts-manager-postman.json" download>Download Postman Collection</a>
+    <a href="../customers-manager-postman.json" download>Download Postman Collection</a>
   </div>
   <div class="content">
     <div class="endpoint">
@@ -98,27 +98,27 @@
     </div>
 
     <div class="endpoint">
-      <h2>GET /contacts</h2>
+      <h2>GET /customers</h2>
       <div class="endpoint-description">
-        List all contacts
+        List all customers
       </div>
       <div class="example">
         <div class="example-header">Response (200 OK)</div>
         <div class="example-content">
-          <pre><code class="language-json" id="contacts-list-example"></code></pre>
+          <pre><code class="language-json" id="customers-list-example"></code></pre>
         </div>
       </div>
     </div>
 
     <div class="endpoint">
-      <h2>GET /contacts/:id</h2>
+      <h2>GET /customers/:id</h2>
       <div class="endpoint-description">
-        Get a specific contact by ID
+        Get a specific customer by ID
       </div>
       <div class="example">
         <div class="example-header">Response (200 OK)</div>
         <div class="example-content">
-          <pre><code class="language-json" id="contact-get-example"></code></pre>
+          <pre><code class="language-json" id="customer-get-example"></code></pre>
         </div>
       </div>
       <div class="example">
@@ -130,20 +130,20 @@
     </div>
 
     <div class="endpoint">
-      <h2>POST /contacts</h2>
+      <h2>POST /customers</h2>
       <div class="endpoint-description">
-        Create a new contact
+        Create a new customer
       </div>
       <div class="example">
         <div class="example-header">Request</div>
         <div class="example-content">
-          <pre><code class="language-json" id="contact-create-request-example"></code></pre>
+          <pre><code class="language-json" id="customer-create-request-example"></code></pre>
         </div>
       </div>
       <div class="example">
         <div class="example-header">Response (201 Created)</div>
         <div class="example-content">
-          <pre><code class="language-json" id="contact-create-response-example"></code></pre>
+          <pre><code class="language-json" id="customer-create-response-example"></code></pre>
         </div>
       </div>
       <div class="example">
@@ -173,10 +173,10 @@
     // Load all examples when the page loads
     window.onload = function() {
       loadExample('healthcheck.json', 'healthcheck-example');
-      loadExample('contacts-list.json', 'contacts-list-example');
-      loadExample('contact-get.json', 'contact-get-example');
-      loadExample('contact-create-request.json', 'contact-create-request-example');
-      loadExample('contact-create-response.json', 'contact-create-response-example');
+      loadExample('customers-list.json', 'customers-list-example');
+      loadExample('customer-get.json', 'customer-get-example');
+      loadExample('customer-create-request.json', 'customer-create-request-example');
+      loadExample('customer-create-response.json', 'customer-create-response-example');
       loadExample('error-not-found.json', 'error-not-found-example');
       loadExample('error-bad-request.json', 'error-bad-request-example');
     };

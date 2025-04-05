@@ -28,9 +28,9 @@ func (app *application) routes() http.Handler {
 	router.MethodNotAllowed = http.HandlerFunc(app.methodNotAllowedResponse)
 
 	router.GET("/healthcheck", app.wrapHandler(app.healthcheckHandler))
-	router.GET("/contacts", app.wrapHandler(app.listContactsHandler))
-	router.POST("/contacts", app.wrapHandler(app.createContactHandler))
-	router.GET("/contacts/:id", app.wrapHandler(app.getContactHandler))
+	router.GET("/customers", app.wrapHandler(app.listCustomersHandler))
+	router.POST("/customers", app.wrapHandler(app.createCustomerHandler))
+	router.GET("/customers/:id", app.wrapHandler(app.getCustomerHandler))
 
 	return app.recoverPanic(app.rateLimit(app.enableCORS(router)))
 }

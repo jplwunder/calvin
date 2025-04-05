@@ -1,16 +1,23 @@
 package data
 
+import (
+	"calvin/connections"
+)
+
 type Models struct {
-	Contacts ContactModel
+	Customers CustomerModel
 }
 
 func NewModels() Models {
+	// Get the MongoDB database connection
+	db := connections.GetDB()
+
 	return Models{
-		Contacts: ContactModel{},
+		Customers: CustomerModel{DB: db},
 	}
 }
 
-type Contact struct {
+type Customer struct {
 	ID    string `json:"id"`
 	Name  string `json:"name"`
 	Phone int64  `json:"phone"`

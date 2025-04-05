@@ -1,7 +1,7 @@
 package api
 
 import (
-	"contacts-manager/internal/data"
+	"calvin/internal/data"
 	"net/http"
 )
 
@@ -9,43 +9,43 @@ type contextKey string
 
 const httprouterParamsKey = contextKey("httprouterParams")
 
-func (app *application) listContactsHandler(w http.ResponseWriter, r *http.Request) {
-	contacts := app.models.Contacts.GetAll()
+func (app *application) listCustomersHandler(w http.ResponseWriter, r *http.Request) {
+	customers := app.models.Customers.GetAll()
 
-	err := app.writeJSON(w, http.StatusOK, envelope{"data": contacts}, nil)
+	err := app.writeJSON(w, http.StatusOK, envelope{"data": customers}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
 }
 
-func (app *application) createContactHandler(w http.ResponseWriter, r *http.Request) {
-	var newContact data.Contact
+func (app *application) createCustomerHandler(w http.ResponseWriter, r *http.Request) {
+	var newCustomer data.Customer
 
-	err := app.readJSON(w, r, &newContact)
+	err := app.readJSON(w, r, &newCustomer)
 	if err != nil {
 		app.badRequestResponse(w, r, err)
 		return
 	}
 
-	app.models.Contacts.Insert(newContact)
+	app.models.Customers.Insert(newCustomer)
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"data": newContact}, nil)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"data": newCustomer}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
 }
 
-func (app *application) getContactHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) getCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	params := r.Context().Value(httprouterParamsKey).(map[string]string)
 	id := params["id"]
 
-	contact := app.models.Contacts.GetByID(id)
-	if contact == nil {
+	customer := app.models.Customers.GetByID(id)
+	if customer == nil {
 		app.notFoundResponse(w, r)
 		return
 	}
 
-	err := app.writeJSON(w, http.StatusOK, envelope{"data": contact}, nil)
+	err := app.writeJSON(w, http.StatusOK, envelope{"data": customer}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

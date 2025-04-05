@@ -1,33 +1,33 @@
-# Contacts Manager API Documentation
+# Calvin API Documentation
 
-This directory contains the API documentation for the Contacts Manager service.
+This directory contains the API documentation for the Calvin API service.
 
 ## Overview
 
-The Contacts Manager API provides endpoints for managing contact information. It allows you to:
+The Calvin API provides endpoints for managing customer information. It allows you to:
 
-- Retrieve a list of all contacts
-- Get details for a specific contact
-- Create new contacts
+- Retrieve a list of all customers
+- Get details for a specific customers
+- Create new customers
 
 ## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/healthcheck` | Check the health status of the API |
-| GET | `/contacts` | List all contacts |
-| GET | `/contacts/:id` | Get a specific contact by ID |
-| POST | `/contacts` | Create a new contact |
+| GET | `/customers` | List all customers |
+| GET | `/customers/:id` | Get a specific customer by ID |
+| POST | `/customers` | Create a new customer |
 
 ## Data Models
 
-### Contact
+### Customer
 
 ```json
 {
   "id": "string",
   "name": "string",
-  "phone": number,
+  "phone": "number",
   "email": "string"
 }
 ```
@@ -42,7 +42,7 @@ The complete API specification is available in [openapi.yaml](./openapi.yaml).
 
 ## Postman Collection
 
-A Postman collection is available for testing the API: [contacts-manager-postman.json](./contacts-manager-postman.json).
+A Postman collection is available for testing the API: [calvin-postman.json](./calvin-postman.json).
 
 ## Interactive Documentation
 

@@ -1,8 +1,9 @@
 package api
 
 import (
-	"contacts-manager/internal/data"
-	"contacts-manager/internal/jsonlog"
+	"calvin/connections"
+	"calvin/internal/data"
+	"calvin/internal/jsonlog"
 	"flag"
 	"fmt"
 	"log"
@@ -60,6 +61,10 @@ func Run() {
 	cfg.cors.trustedOrigins = strings.Fields(corsTrustedOrigins)
 
 	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
+
+	// Initialize MongoDB connection
+	connections.Connect()
+
 	models := data.NewModels()
 
 	app := &application{

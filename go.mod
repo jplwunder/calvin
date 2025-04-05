@@ -1,4 +1,4 @@
-module contacts-manager
+module calvin
 
 go 1.24.0
 
