@@ -1,7 +1,6 @@
 package api
 
 import (
-	"calvin/connections"
 	"calvin/internal/data"
 	"calvin/internal/jsonlog"
 	"flag"
@@ -20,9 +19,9 @@ const version = "1.0.0"
 const corsTrustedOrigins = "http://localhost:3000"
 
 type config struct {
-	port    int
-	env     string
-	limiter struct {
+	port        int
+	environment string
+	limiter     struct {
 		rps     float64
 		burst   int
 		enabled bool
@@ -51,19 +50,30 @@ func Run() {
 		port = "8080"
 	}
 	cfg.port, _ = strconv.Atoi(port)
+
+	environment := os.Getenv("ENVIRONMENT")
+	if environment == "" {
+		environment = "DEVELOPMENT"
+	}
+	cfg.environment = environment
+
 	flag.IntVar(&cfg.port, "port", cfg.port, "API server port")
-	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
+	flag.StringVar(&cfg.environment, "environment", cfg.environment, "Environment (DEVELOPMENT|STAGING|PRODUCTION)")
 	flag.Float64Var(&cfg.limiter.rps, "limiter-rps", 2, "Rate limiter maximum requests per second")
 	flag.IntVar(&cfg.limiter.burst, "limiter-burst", 4, "Rate limiter maximum burst")
-	flag.BoolVar(&cfg.limiter.enabled, "limiter-enabled", true, "Enable rate limiter")
+
+	var enable_limiter bool
+	if environment == "PRODUCTION" {
+		enable_limiter = true
+	} else {
+		enable_limiter = false
+	}
+	flag.BoolVar(&cfg.limiter.enabled, "limiter-enabled", enable_limiter, "Enable rate limiter")
 	flag.Parse()
 
 	cfg.cors.trustedOrigins = strings.Fields(corsTrustedOrigins)
 
 	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
-
-	// Initialize MongoDB connection
-	connections.Connect()
 
 	models := data.NewModels()
 
@@ -84,7 +94,7 @@ func Run() {
 
 	logger.PrintInfo("starting server", map[string]string{
 		"addr": srv.Addr,
-		"env":  cfg.env,
+		"env":  cfg.environment,
 	})
 
 	err = srv.ListenAndServe()
