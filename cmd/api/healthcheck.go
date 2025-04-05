@@ -9,7 +9,7 @@ func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Reques
 	env := envelope{
 		"status": "available",
 		"system_info": map[string]string{
-			"environment":     app.config.env,
+			"environment":     app.config.environment,
 			"version":         version,
 			"trusted_origins": strings.Join(app.config.cors.trustedOrigins, ", "),
 		},
