@@ -1,22 +1,11 @@
 services:
 
-  mongodb:
-    image: mongo:latest
-    restart: unless-stopped
-    ports:
-      - "27017:27017" # Maps MongoDB default port
-    volumes:
-      - mongodb_data:/data/db # Persistent storage
-      - mongodb_config:/data/configdb # Persistent config
-
   calvin-api:
     build:
       context: .
       dockerfile: calvin-api.dockerfile
     ports:
-      - "8080:8080"
-    depends_on:
-      - mongodb
+      - 8080:8080
     volumes:
       - ./:/app
 
@@ -27,7 +16,3 @@ services:
       - "8000:8000"
     depends_on:
       - calvin-api
-
-volumes:
-  mongodb_data:
-  mongodb_config:
