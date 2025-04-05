@@ -1,6 +1,6 @@
 services:
 
-  calvin-api:
+  api:
     build:
       context: .
       dockerfile: calvin-api.dockerfile
@@ -8,11 +8,28 @@ services:
       - 8080:8080
     volumes:
       - ./:/app
+    depends_on:
+      - postgres
 
-  calvin-api-docs:
+  api-docs:
     build:
       context: ./api
     ports:
       - "8000:8000"
     depends_on:
-      - calvin-api
+      - api
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: calvin_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
