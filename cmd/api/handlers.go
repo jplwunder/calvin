@@ -19,7 +19,7 @@ func (app *application) listCustomersHandler(w http.ResponseWriter, r *http.Requ
 }
 
 func (app *application) createCustomerHandler(w http.ResponseWriter, r *http.Request) {
-	var newCustomer data.Customer
+	var newCustomer data.CustomerModel
 
 	err := app.readJSON(w, r, &newCustomer)
 	if err != nil {
@@ -39,8 +39,8 @@ func (app *application) getCustomerHandler(w http.ResponseWriter, r *http.Reques
 	params := r.Context().Value(httprouterParamsKey).(map[string]string)
 	id := params["id"]
 
-	customer := app.models.Customers.GetByID(id)
-	if customer == nil {
+	customer, found := app.models.Customers.GetByID(id)
+	if !found {
 		app.notFoundResponse(w, r)
 		return
 	}

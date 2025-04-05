@@ -1,55 +1,43 @@
 package data
 
-import (
-	"context"
+import ()
 
-	"go.mongodb.org/mongo-driver/v2/bson"
-	"go.mongodb.org/mongo-driver/v2/mongo"
-)
-
-type CustomerModel struct {
-	DB *mongo.Database
+type Models struct {
+	Customers CustomerModel
 }
 
-func (m CustomerModel) GetAll() []Customer {
-	var customers []Customer
-
-	collection := m.DB.Collection("customers")
-	cursor, err := collection.Find(context.TODO(), bson.D{})
-	if err != nil {
-		return customers
+func NewModels() Models {
+	return Models{
+		Customers: CustomerModel{},
 	}
+}
 
-	defer cursor.Close(context.TODO())
+type CustomerModel struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Phone int64  `json:"phone"`
+	Email string `json:"email"`
+}
 
-	for cursor.Next(context.TODO()) {
-		var customer Customer
-		if err := cursor.Decode(&customer); err != nil {
-			continue
-		}
-		customers = append(customers, customer)
-	}
+var customers = []CustomerModel{
+	{ID: "1", Name: "John Doe", Phone: 1234567890, Email: "john.doe@example.com"},
+	{ID: "2", Name: "Jane Smith", Phone: 9876543210, Email: "jane.smith@example.com"},
+	{ID: "3", Name: "Alice Johnson", Phone: 5551234567, Email: "alice.johnson@example.com"},
+}
 
+func (m CustomerModel) GetAll() []CustomerModel {
 	return customers
 }
 
-func (m CustomerModel) GetByID(id string) *Customer {
-	var customer Customer
-
-	collection := m.DB.Collection("customers")
-	err := collection.FindOne(context.TODO(), bson.D{{"id", id}}).Decode(&customer)
-	if err != nil {
-		return nil
+func (m CustomerModel) GetByID(id string) (CustomerModel, bool) {
+	for _, customer := range customers {
+		if customer.ID == id {
+			return customer, true
+		}
 	}
-
-	return &customer
+	return CustomerModel{}, false
 }
 
-func (m CustomerModel) Insert(customer Customer) {
-	collection := m.DB.Collection("customers")
-	_, err := collection.InsertOne(context.TODO(), customer)
-	if err != nil {
-		// Handle error (in a real application, you might want to return an error)
-		return
-	}
+func (m CustomerModel) Insert(customer CustomerModel) {
+	customers = append(customers, customer)
 }
