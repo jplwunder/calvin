@@ -1,5 +1,4 @@
 services:
-
   api:
     build:
       context: .
@@ -8,8 +7,11 @@ services:
       - 8080:8080
     volumes:
       - ./:/app
+    environment:
+      DB_DSN: "postgres://calvinuser:calvinpass@postgres_db:5432/calvindb?sslmode=disable"
     depends_on:
-      - postgres
+      postgres_db:
+        condition: service_healthy
 
   api-docs:
     build:
@@ -19,17 +21,22 @@ services:
     depends_on:
       - api
 
-  postgres:
-    image: postgres:latest
-    container_name: postgres
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: postgres_db_calvin
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: calvin_db
+      POSTGRES_USER: calvinuser
+      POSTGRES_PASSWORD: calvinpass
+      POSTGRES_DB: calvindb
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U calvinuser -d calvindb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
