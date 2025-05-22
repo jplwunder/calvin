@@ -1,0 +1,39 @@
+name: Auto Create Draft PR
+
+on:
+  push:
+    branches:
+      - '*' # Trigger on push to any branch
+      - '!main' # Exclude the 'main' (or 'master') branch
+      - '!master' # Exclude the 'master' (or 'main') branch
+
+jobs:
+  create_draft_pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to create/update pull requests
+      pull-requests: write # Required to create/update pull requests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get branch name
+        id: branch_name
+        run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+
+      - name: Create or update draft pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main # The base branch you want to merge into (e.g., 'main' or 'develop')
+          head: ${{ steps.branch_name.outputs.branch }}
+          title: "Draft: ${{ steps.branch_name.outputs.branch }}"
+          body: |
+            This is a draft pull request for branch `${{ steps.branch_name.outputs.branch }}`.
+            It's a work in progress and not yet ready for review.
+          draft: true
+          # You can add other options here, like:
+          # assignees: your-github-username
+          # reviewers: team-name
+          # labels: draft, work-in-progress
